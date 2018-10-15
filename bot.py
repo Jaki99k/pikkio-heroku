@@ -1,57 +1,89 @@
-#Data creazione 21/08/2018
-# coding=utf-8
-
 import telepot
-import subprocess
-import speech_recognition as sr
-from pydub import AudioSegment
+import telegram
+import urllib.request
+from InstagramAPI import InstagramAPI
+from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
 
-recognizer_instance = sr.Recognizer()
+
+client = InstagramAPI("jakybay", "camillo197")
+
+client.login()
 
 def on_chat_message(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
-    if content_type == 'voice':
-        name = msg["from"]["first_name"]
-        lon = msg["voice"]["duration"]
-        voiceName = msg["voice"]["file_id"]
-        mimeType = msg["voice"]["mime_type"]
-        bot.download_file(msg["voice"]["file_id"], './audio.ogg')
-        subprocess.call(['ffmpeg', '-v', 'quiet', '-y', '-i', 'audio.ogg', 'audio.wav'])
-        wav =  sr.AudioFile('audio.wav')
-        with wav as source:
-            recognizer_instance.pause_threshold = 3.0
-            audio = recognizer_instance.listen(source)
-            print('Elaborazione messaggio in corso...')
-            bot.sendMessage(chat_id, "Elaborazione...")
 
-        try:
-            text = recognizer_instance.recognize_google(audio, language="it-IT")
-            print("Sono riuscito a comprendere: \n", text)
-            bot.sendMessage(chat_id, "Messaggio: %s\n"%text)
-        except Exception as e:
-            print(e)
+    
+    global mex
+    mex = msg['text']
 
-        bot.sendMessage(chat_id, "Il messaggio inviato è di tipo vocale!")
-        print('Utente: %s'%name)
-        if lon > 1:
-            print('Lunghezza audio: %d'%lon,'secondi')
+    if content_type == 'text':
+            answerMex = ""
+            client.searchUsername(mex)
+            userInfo = client.LastJson
+            print(userInfo)
+            answerMex = "🔮Details : \n\n"
+            if str(userInfo['user']['full_name']) != "":
+                answerMex += "<b>🗣️Full Name :  </b>" + str(userInfo['user']['full_name']) + '\n'
+            answerMex += "<b>👨‍Username :  </b>" + str(userInfo['user']['username']) + '\n\n\n'
+            answerMex += "<b>📸Published Photos :  </b>" + str(userInfo['user']['media_count']) + '\n'
+            answerMex += "<b>⏮️Followers :  </b>" + str(userInfo['user']['follower_count']) + '\n'
+            answerMex += "<b>⏭️Following :  </b>" + str(userInfo['user']['following_count']) + '\n\n\n'
+            if str(userInfo['user']['is_private']) == 'True':
+                answerMex += "<b>🔐Private Profile :  </b>" + '✅' + '\n\n\n'
+            else:
+                answerMex += "<b>🔐Private Profile :  </b>" + '❌' + '\n\n\n'
+            answerMex += "<b>📝Biography :  </b>\n\n" + str(userInfo['user']['biography']) + '\n' 
+            bot.sendMessage(chat_id, answerMex, parse_mode='HTML')
+            form = InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text="🖼 Download Profile Pic ", callback_data="profilepic"),
+                InlineKeyboardButton(text="Download stories ", callback_data="downloadstories")]
+            ])
+            bot.sendMessage(chat_id, "<b>👽EXTRA : </b>", reply_markup=form, parse_mode='HTML')
+            #bot.sendPhoto(chat_id, ("profile_pic.jpg", ))
+
+def on_callback_query(msg):
+    query_id, from_id, query_data = telepot.glance(msg, flavor='callback_query')
+
+    if query_data == 'profilepic':
+        client.searchUsername(mex)
+        userInfo = client.LastJson
+        #print(userInfo)
+        url = userInfo['user']['hd_profile_pic_url_info']['url']
+        photo = urllib.request.urlopen(url)
+        bot.sendPhoto(from_id, ("profile_pic.jpg", photo))
+    elif query_data == 'downloadstories':
+        conta = 0
+        client.searchUsername(mex)
+        userInfo = client.LastJson
+        pk = userInfo['user']['pk']
+        client.getStory(pk)
+        storie = client.LastJson
+        
+        print('\n\n\n\n\n\n\n')
+        #print(storie['items'][0])
+
+        storie = storie['items']
+
+        if not storie:
+            bot.sendMessage(from_id, "You can't see the story because you don't follow this profile!")
         else:
-            print('Lunghezza audio: %d'%lon,'secondo')
+            for x in storie:
+                if 'video_versions' in storie[conta].keys():
+                    url = storie[conta]['video_versions'][0]['url']
+                    photo = urllib.request.urlopen(url)
+                    bot.sendVideo(from_id, ("stories.jpg", photo))
+                else:
+                    url = storie[conta]['image_versions2']['candidates'][0]['url']
+                    photo = urllib.request.urlopen(url)
+                    bot.sendPhoto(from_id, ("stories.jpg", photo))
+                conta += 1
 
-TOKEN = '573952513:AAHp0U1TP_zBo4b-I2EVk_Sgk4EUPp8cNaA'
 
+TOKEN = "575737044:AAG52eLCKobkE-UCaYHQ2Zy5MMEOdU2B_qA"
 bot = telepot.Bot(TOKEN)
-bot.message_loop(on_chat_message)
-
-print('Listening for inputs... ')
+bot.message_loop({'chat': on_chat_message, 'callback_query': on_callback_query})
 
 import time
-
 while 1:
     time.sleep(10)
 
-
-#DA RICORDARE
-
-#bot.sendMessage(chat_id, 'ciao %s, sono un bot molto stupido!'%name)
-#bot.sendMessage(chat_id, 'ho ricevuto questo : %s'%txt)
