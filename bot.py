@@ -11,7 +11,6 @@ client.login()
 
 def on_chat_message(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
-
     
     global mex
     mex = msg['text']
@@ -20,26 +19,30 @@ def on_chat_message(msg):
             answerMex = ""
             client.searchUsername(mex)
             userInfo = client.LastJson
-            print(userInfo)
-            answerMex = "🔮Details : \n\n"
-            if str(userInfo['user']['full_name']) != "":
-                answerMex += "<b>🗣️Full Name :  </b>" + str(userInfo['user']['full_name']) + '\n'
-            answerMex += "<b>👨‍Username :  </b>" + str(userInfo['user']['username']) + '\n\n\n'
-            answerMex += "<b>📸Published Photos :  </b>" + str(userInfo['user']['media_count']) + '\n'
-            answerMex += "<b>⏮️Followers :  </b>" + str(userInfo['user']['follower_count']) + '\n'
-            answerMex += "<b>⏭️Following :  </b>" + str(userInfo['user']['following_count']) + '\n\n\n'
-            if str(userInfo['user']['is_private']) == 'True':
-                answerMex += "<b>🔐Private Profile :  </b>" + '✅' + '\n\n\n'
+
+            if 'message' in userInfo:
+                bot.sendMessage(chat_id, "❌ User not found!")
             else:
-                answerMex += "<b>🔐Private Profile :  </b>" + '❌' + '\n\n\n'
-            answerMex += "<b>📝Biography :  </b>\n\n" + str(userInfo['user']['biography']) + '\n' 
-            bot.sendMessage(chat_id, answerMex, parse_mode='HTML')
-            form = InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(text="🖼 Download Profile Pic ", callback_data="profilepic"),
-                InlineKeyboardButton(text="Download stories ", callback_data="downloadstories")]
-            ])
-            bot.sendMessage(chat_id, "<b>👽EXTRA : </b>", reply_markup=form, parse_mode='HTML')
-            #bot.sendPhoto(chat_id, ("profile_pic.jpg", ))
+                print(userInfo)
+                answerMex = "🔮Details : \n\n"
+                if str(userInfo['user']['full_name']) != "":
+                    answerMex += "<b>🗣️Full Name :  </b>" + str(userInfo['user']['full_name']) + '\n'
+                answerMex += "<b>👨‍Username :  </b>" + str(userInfo['user']['username']) + '\n\n\n'
+                answerMex += "<b>📸Published Photos :  </b>" + str(userInfo['user']['media_count']) + '\n'
+                answerMex += "<b>⏮️Followers :  </b>" + str(userInfo['user']['follower_count']) + '\n'
+                answerMex += "<b>⏭️Following :  </b>" + str(userInfo['user']['following_count']) + '\n\n\n'
+                if str(userInfo['user']['is_private']) == 'True':
+                    answerMex += "<b>🔐Private Profile :  </b>" + '✅' + '\n\n\n'
+                else:
+                    answerMex += "<b>🔐Private Profile :  </b>" + '❌' + '\n\n\n'
+                answerMex += "<b>📝Biography :  </b>\n\n" + str(userInfo['user']['biography']) + '\n' 
+                bot.sendMessage(chat_id, answerMex, parse_mode='HTML')
+                form = InlineKeyboardMarkup(inline_keyboard=[
+                    [InlineKeyboardButton(text="🖼️ Download Profile Pic ", callback_data="profilepic"),
+                    InlineKeyboardButton(text="📸 Download stories ", callback_data="downloadstories")]
+                ])
+                bot.sendMessage(chat_id, "<b>👽EXTRA : </b>", reply_markup=form, parse_mode='HTML')
+                #bot.sendPhoto(chat_id, ("profile_pic.jpg", ))
 
 def on_callback_query(msg):
     query_id, from_id, query_data = telepot.glance(msg, flavor='callback_query')
@@ -79,11 +82,10 @@ def on_callback_query(msg):
                 conta += 1
 
 
-TOKEN = ""
+TOKEN = "703552342:AAFbaj2jDZ11ZTT60LMbZHBw34yR0YLFG0w"
 bot = telepot.Bot(TOKEN)
 bot.message_loop({'chat': on_chat_message, 'callback_query': on_callback_query})
 
 import time
 while 1:
     time.sleep(10)
-
