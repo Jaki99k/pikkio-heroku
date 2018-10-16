@@ -82,7 +82,7 @@ def on_callback_query(msg):
                 conta += 1
 
 
-TOKEN = "703552342:AAFbaj2jDZ11ZTT60LMbZHBw34yR0YLFG0w"
+TOKEN = ""
 bot = telepot.Bot(TOKEN)
 bot.message_loop({'chat': on_chat_message, 'callback_query': on_callback_query})
 
