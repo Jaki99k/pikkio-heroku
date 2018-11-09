@@ -8,10 +8,6 @@ from email.mime.text import MIMEText
 from email import encoders
 from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
 
-server = smtplib.SMTP('smtp.gmail.com', 587)
-server.starttls()
-server.login("pikkiobot@gmail.com", "Pikkiobot01")
-
 def genFiles(mex):
 	global infos
 	global send
@@ -41,6 +37,11 @@ def sendMail(user):
 
 def on_chat_message(msg):
 	content_type, chat_type, chat_id = telepot.glance(msg)
+
+	#Login nell'account gmail
+	server = smtplib.SMTP('smtp.gmail.com', 587)
+	server.starttls()
+	server.login("pikkiobot@gmail.com", "Pikkiobot01")
 
 	global fileName
 
