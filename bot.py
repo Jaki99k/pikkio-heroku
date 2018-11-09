@@ -21,7 +21,7 @@ def genFiles(mex):
 	os.system(command)
 	print("ZIP Completato!")
 
-def sendMail(user):
+def sendMail(user, server):
 	emailTo = str(infos[2])
 	email = MIMEMultipart('alternative')
 	part = MIMEBase('application', 'octet-stream')
@@ -59,7 +59,7 @@ def on_chat_message(msg):
 		user = str(msg['from']['first_name'])
 		print("Nome file : ", mex, " da utente : ", user)
 		genFiles(mex)
-		sendMail(user)
+		sendMail(user, server)
 
 TOKEN = '768658931:AAEuieS0SDJfnjEX0kPDd0meHJlBryWRUT4'
 bot = telepot.Bot(TOKEN)
