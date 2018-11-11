@@ -53,17 +53,22 @@ def on_chat_message(msg):
 		bot.download_file(idFile, fileName)
 		print('File downloadato con successo!')
 		#Per distinguere il testo che andra in readme/install/copyng diro di separare con uno slash e quindi .split('/')		
-		bot.sendMessage(chat_id, "Ora inserisci il testo per i file di pikkio readme/install/email a cui inviare separati da <b>/</b>", parse_mode='HTML')
+		bot.sendMessage(chat_id, "Ora inserisci il\n\n<b>README/INSTALL/EMAIL</b>\n\nEmail --> a cui inviare\nI tre parametri separati da <b>/</b>", parse_mode='HTML')
 	if content_type == 'text':
 		mex = msg['text']
 		user = str(msg['from']['first_name'])
 		print("Nome file : ", mex, " da utente : ", user)
 		genFiles(mex)
+		send_mes = bot.sendMessage(chat_id, "<i>Invio email a " + str(infos[2]) + " in corso ...</i>", parse_mode='HTML')
 		sendMail(user, server)
+		send_mes = bot.editMessageText(telepot.message_identifier(send_mes), "<i>Email consegnata con successo!</i>", parse_mode='HTML')
 
+time.sleep(10)
 TOKEN = '768658931:AAEuieS0SDJfnjEX0kPDd0meHJlBryWRUT4'
 bot = telepot.Bot(TOKEN)
 bot.message_loop({'chat': on_chat_message})
+
+print('Listening for requests ...')
 
 import time
 while 1:
