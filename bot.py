@@ -63,7 +63,6 @@ def on_chat_message(msg):
 		sendMail(user, server)
 		send_mes = bot.editMessageText(telepot.message_identifier(send_mes), "<i>Email consegnata con successo!</i>", parse_mode='HTML')
 
-time.sleep(10)
 TOKEN = '768658931:AAEuieS0SDJfnjEX0kPDd0meHJlBryWRUT4'
 bot = telepot.Bot(TOKEN)
 bot.message_loop({'chat': on_chat_message})
