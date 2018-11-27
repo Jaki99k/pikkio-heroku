@@ -1,6 +1,5 @@
 aiohttp==3.4.4
 app==0.0.1
-apturl==0.5.2
 async-timeout==3.0.1
 attrs==18.2.0
 beautifulsoup4==4.4.1
