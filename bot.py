@@ -80,7 +80,7 @@ def on_chat_message(msg):
 		print('Download del file in corso ...')
 		idFile = msg['document']['file_id']
 		fileName = msg['document']['file_name']
-		if fileName[len(fileName)-4:] != '.cpp' and fileName[len(fileName)-2:] != '.h':
+		if fileName[len(fileName)-4:] != '.cpp' and fileName[len(fileName)-2:] != '.h' and fileName != 'COPYNG':
 			bot.sendMessage(chat_id, "❌ <i>Tipo di file non valido,</i>\n Sono ammessi solamente\n file con estensione \n<b>.cpp</b> o <b>.h</b>", parse_mode='HTML')
 		else:
 			bot.download_file(idFile, fileName)
