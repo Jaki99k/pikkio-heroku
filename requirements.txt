@@ -3,7 +3,6 @@ app==0.0.1
 async-timeout==3.0.1
 attrs==18.2.0
 beautifulsoup4==4.4.1
-Brlapi==0.6.4
 bs4==0.0.1
 chardet==2.3.0
 chrome-gnome-shell==0.0.0
